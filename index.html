@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decoder — Because your partner won't stop talking about the internet</title>
+  <meta name="description" content="Decoder is your warm, friendly guide to tech and finance references you keep hearing about.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300..700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       DECODER — DESIGN TOKENS
+    ============================================================ */
+    :root, [data-theme="light"] {
+      --color-bg:               #faf7f2;
+      --color-surface:          #fdf9f3;
+      --color-surface-2:        #fffcf7;
+      --color-surface-offset:   #f3ede2;
+      --color-surface-offset-2: #ece4d6;
+      --color-surface-dynamic:  #e4dace;
+      --color-divider:          #ddd5c5;
+      --color-border:           #d2c9b8;
+      --color-text:             #2a2318;
+      --color-text-muted:       #7a6e5f;
+      --color-text-faint:       #bbb0a0;
+      --color-text-inverse:     #fdf9f3;
+      --color-primary:          #b97a1a;
+      --color-primary-hover:    #96600f;
+      --color-primary-active:   #7a4a08;
+      --color-primary-highlight:#f0e2c2;
+
+      /* Category badge colors */
+      --cat-ai:        #2c6e9c;
+      --cat-ai-bg:     color-mix(in oklch, #2c6e9c 14%, var(--color-surface));
+      --cat-finance:   #b97a1a;
+      --cat-finance-bg:var(--color-primary-highlight);
+      --cat-tech:      #5a8c7a;
+      --cat-tech-bg:   color-mix(in oklch, #5a8c7a 14%, var(--color-surface));
+      --cat-culture:   #a03060;
+      --cat-culture-bg:color-mix(in oklch, #a03060 12%, var(--color-surface));
+      --cat-semi:      #7040a0;
+      --cat-semi-bg:   color-mix(in oklch, #7040a0 14%, var(--color-surface));
+      --cat-creator:   #d47020;
+      --cat-creator-bg:color-mix(in oklch, #d47020 14%, var(--color-surface));
+      --cat-bigtech:   #2a7a6a;
+      --cat-bigtech-bg:color-mix(in oklch, #2a7a6a 14%, var(--color-surface));
+      --cat-legal:     #c03535;
+      --cat-legal-bg:  color-mix(in oklch, #c03535 12%, var(--color-surface));
+
+      --radius-sm: 0.375rem;
+      --radius-md: 0.5rem;
+      --radius-lg: 0.875rem;
+      --radius-xl: 1.25rem;
+      --radius-2xl: 1.75rem;
+      --radius-full: 9999px;
+      --transition-interactive: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+      --transition-expand: 380ms cubic-bezier(0.16, 1, 0.3, 1);
+      --shadow-sm: 0 1px 3px oklch(0.2 0.05 60 / 0.06);
+      --shadow-md: 0 4px 16px oklch(0.2 0.05 60 / 0.09);
+      --shadow-lg: 0 12px 40px oklch(0.2 0.05 60 / 0.13);
+
+      --space-1: 0.25rem;   --space-2: 0.5rem;    --space-3: 0.75rem;
+      --space-4: 1rem;      --space-5: 1.25rem;   --space-6: 1.5rem;
+      --space-8: 2rem;      --space-10: 2.5rem;   --space-12: 3rem;
+      --space-16: 4rem;     --space-20: 5rem;     --space-24: 6rem;
+
+      --text-xs:   clamp(0.72rem,  0.67rem + 0.25vw, 0.825rem);
+      --text-sm:   clamp(0.875rem, 0.8rem  + 0.35vw, 1rem);
+      --text-base: clamp(1rem,     0.9rem  + 0.5vw,  1.125rem);
+      --text-lg:   clamp(1.125rem, 0.95rem + 0.85vw, 1.5rem);
+      --text-xl:   clamp(1.5rem,   1rem    + 1.5vw,  2.25rem);
+      --text-2xl:  clamp(2rem,     1.2rem  + 2.5vw,  3.5rem);
+      --text-hero: clamp(2.8rem,   0.5rem  + 7vw,    7rem);
+
+      --font-display: 'DM Serif Display', 'Georgia', serif;
+      --font-body:    'Inter', 'Helvetica Neue', sans-serif;
+      --content-default: 960px;
+      --content-narrow:  680px;
+    }
+
+    [data-theme="dark"] {
+      --color-bg:               #1a1510;
+      --color-surface:          #201a13;
+      --color-surface-2:        #261f17;
+      --color-surface-offset:   #1d1812;
+      --color-surface-offset-2: #231d16;
+      --color-surface-dynamic:  #302820;
+      --color-divider:          #2e2519;
+      --color-border:           #3d3328;
+      --color-text:             #e8dece;
+      --color-text-muted:       #9c8e7a;
+      --color-text-faint:       #5a5045;
+      --color-text-inverse:     #201a13;
+      --color-primary:          #d4903a;
+      --color-primary-hover:    #e8a550;
+      --color-primary-active:   #f0bc70;
+      --color-primary-highlight:#40321a;
+
+      --cat-ai:        #5898d4;
+      --cat-ai-bg:     color-mix(in oklch, #5898d4 18%, var(--color-surface));
+      --cat-finance:   #d4903a;
+      --cat-finance-bg:var(--color-primary-highlight);
+      --cat-tech:      #7ab09a;
+      --cat-tech-bg:   color-mix(in oklch, #7ab09a 16%, var(--color-surface));
+      --cat-culture:   #d078a0;
+      --cat-culture-bg:color-mix(in oklch, #d078a0 16%, var(--color-surface));
+      --cat-semi:      #a878d8;
+      --cat-semi-bg:   color-mix(in oklch, #a878d8 16%, var(--color-surface));
+      --cat-creator:   #e08838;
+      --cat-creator-bg:color-mix(in oklch, #e08838 16%, var(--color-surface));
+      --cat-bigtech:   #50a890;
+      --cat-bigtech-bg:color-mix(in oklch, #50a890 16%, var(--color-surface));
+      --cat-legal:     #d86060;
+      --cat-legal-bg:  color-mix(in oklch, #d86060 14%, var(--color-surface));
+
+      --shadow-sm: 0 1px 3px oklch(0 0 0 / 0.28);
+      --shadow-md: 0 4px 16px oklch(0 0 0 / 0.38);
+      --shadow-lg: 0 12px 40px oklch(0 0 0 / 0.48);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme]) {
+        --color-bg: #1a1510; --color-surface: #201a13; --color-surface-2: #261f17;
+        --color-surface-offset: #1d1812; --color-surface-offset-2: #231d16;
+        --color-surface-dynamic: #302820; --color-divider: #2e2519; --color-border: #3d3328;
+        --color-text: #e8dece; --color-text-muted: #9c8e7a; --color-text-faint: #5a5045;
+        --color-text-inverse: #201a13; --color-primary: #d4903a;
+        --color-primary-hover: #e8a550; --color-primary-active: #f0bc70;
+        --color-primary-highlight: #40321a;
+        --cat-ai: #5898d4; --cat-ai-bg: color-mix(in oklch, #5898d4 18%, #201a13);
+        --cat-finance: #d4903a; --cat-finance-bg: #40321a;
+        --cat-tech: #7ab09a; --cat-tech-bg: color-mix(in oklch, #7ab09a 16%, #201a13);
+        --cat-culture: #d078a0; --cat-culture-bg: color-mix(in oklch, #d078a0 16%, #201a13);
+        --cat-semi: #a878d8; --cat-semi-bg: color-mix(in oklch, #a878d8 16%, #201a13);
+        --cat-creator: #e08838; --cat-creator-bg: color-mix(in oklch, #e08838 16%, #201a13);
+        --cat-bigtech: #50a890; --cat-bigtech-bg: color-mix(in oklch, #50a890 16%, #201a13);
+        --cat-legal: #d86060; --cat-legal-bg: color-mix(in oklch, #d86060 14%, #201a13);
+        --shadow-sm: 0 1px 3px oklch(0 0 0 / 0.28);
+        --shadow-md: 0 4px 16px oklch(0 0 0 / 0.38);
+        --shadow-lg: 0 12px 40px oklch(0 0 0 / 0.48);
+      }
+    }
+
+    /* ============================================================
+       BASE RESET
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html {
+      -webkit-text-size-adjust: none;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      scroll-behavior: smooth;
+      scroll-padding-top: var(--space-16);
+    }
+    body {
+      min-height: 100dvh;
+      line-height: 1.6;
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      color: var(--color-text);
+      background-color: var(--color-bg);
+    }
+    h1, h2, h3, h4, h5 { text-wrap: balance; line-height: 1.15; }
+    p, li { text-wrap: pretty; max-width: 72ch; }
+    img, svg { display: block; max-width: 100%; }
+    button { cursor: pointer; background: none; border: none; font: inherit; color: inherit; }
+    :focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; border-radius: var(--radius-sm); }
+    ::selection { background: var(--color-primary-highlight); color: var(--color-text); }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ============================================================
+       LAYOUT
+    ============================================================ */
+    .container {
+      max-width: var(--content-default);
+      margin: 0 auto;
+      padding-inline: var(--space-6);
+    }
+    @media (max-width: 600px) {
+      .container { padding-inline: var(--space-4); }
+    }
+
+    /* ============================================================
+       NAV
+    ============================================================ */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: color-mix(in oklch, var(--color-surface) 92%, transparent);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--color-divider);
+    }
+    .nav-inner {
+      max-width: var(--content-default);
+      margin: 0 auto;
+      padding-inline: var(--space-6);
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+    }
+    @media (max-width: 600px) {
+      .nav-inner { padding-inline: var(--space-4); }
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: clamp(1.25rem, 1rem + 1vw, 1.6rem);
+      color: var(--color-text);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+    }
+    .nav-logo span {
+      color: var(--color-primary);
+      font-style: italic;
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .theme-toggle {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-muted);
+      transition: background var(--transition-interactive), color var(--transition-interactive);
+    }
+    .theme-toggle:hover {
+      background: var(--color-surface-dynamic);
+      color: var(--color-text);
+    }
+
+    /* ============================================================
+       HERO
+    ============================================================ */
+    .hero {
+      padding-block: clamp(var(--space-12), 8vw, var(--space-24));
+      text-align: center;
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, var(--color-primary-highlight) 0%, transparent 70%);
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+      background: var(--color-primary-highlight);
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-full);
+      margin-bottom: var(--space-5);
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: var(--text-hero);
+      color: var(--color-text);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-4);
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--color-primary);
+    }
+    .hero-subtitle {
+      font-family: var(--font-body);
+      font-size: var(--text-lg);
+      color: var(--color-text-muted);
+      max-width: 52ch;
+      margin: 0 auto var(--space-8);
+      line-height: 1.5;
+    }
+    .hero-search-wrap {
+      position: relative;
+      max-width: 540px;
+      margin: 0 auto var(--space-5);
+    }
+    .search-icon {
+      position: absolute;
+      left: var(--space-4);
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--color-text-faint);
+      pointer-events: none;
+    }
+    .hero-search {
+      width: 100%;
+      padding: var(--space-4) var(--space-4) var(--space-4) calc(var(--space-4) + var(--space-8));
+      border-radius: var(--radius-xl);
+      border: 1.5px solid var(--color-border);
+      background: var(--color-surface-2);
+      color: var(--color-text);
+      font-size: var(--text-base);
+      font-family: var(--font-body);
+      box-shadow: var(--shadow-md);
+      transition: border-color var(--transition-interactive), box-shadow var(--transition-interactive);
+    }
+    .hero-search:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px var(--color-primary-highlight), var(--shadow-md);
+    }
+    .hero-search::placeholder { color: var(--color-text-faint); }
+    .search-clear {
+      position: absolute;
+      right: var(--space-4);
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--color-text-faint);
+      width: 28px;
+      height: 28px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-full);
+      transition: background var(--transition-interactive), color var(--transition-interactive);
+    }
+    .search-clear.visible { display: flex; }
+    .search-clear:hover { background: var(--color-surface-dynamic); color: var(--color-text); }
+    .hero-timestamp {
+      font-size: var(--text-xs);
+      color: var(--color-text-faint);
+    }
+    .hero-timestamp strong {
+      color: var(--color-text-muted);
+      font-weight: 500;
+    }
+
+    /* ============================================================
+       SECTION HEADER
+    ============================================================ */
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-3);
+      margin-bottom: var(--space-6);
+      padding-bottom: var(--space-3);
+      border-bottom: 1.5px solid var(--color-divider);
+    }
+    .section-eyebrow {
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-text-faint);
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      color: var(--color-text);
+      line-height: 1.1;
+    }
+    .section-count {
+      font-size: var(--text-xs);
+      color: var(--color-text-faint);
+      font-weight: 500;
+      margin-left: auto;
+    }
+
+    /* ============================================================
+       STORY CARDS
+    ============================================================ */
+    .stories-section {
+      padding-block: var(--space-12) var(--space-16);
+    }
+    .stories-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
+    }
+
+    .story-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow var(--transition-interactive), border-color var(--transition-interactive), transform var(--transition-interactive);
+    }
+    .story-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-surface-dynamic);
+    }
+    .story-card.hidden { display: none; }
+
+    .story-header {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
+      padding: var(--space-5) var(--space-6);
+      cursor: pointer;
+      user-select: none;
+    }
+    @media (max-width: 600px) {
+      .story-header { padding: var(--space-4); gap: var(--space-3); }
+    }
+    .story-header:hover .story-title { color: var(--color-primary); }
+    .story-header-left { flex: 1; min-width: 0; }
+    .story-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-2);
+      flex-wrap: wrap;
+    }
+    .category-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px var(--space-3);
+      border-radius: var(--radius-full);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+    }
+    .story-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.05rem, 0.9rem + 0.7vw, 1.35rem);
+      color: var(--color-text);
+      line-height: 1.2;
+      margin-bottom: var(--space-2);
+      transition: color var(--transition-interactive);
+    }
+    .story-quick {
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+      line-height: 1.5;
+    }
+    .story-toggle {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-faint);
+      background: var(--color-surface-offset);
+      transition: background var(--transition-interactive), color var(--transition-interactive), transform var(--transition-interactive);
+      margin-top: var(--space-1);
+    }
+    .story-card.open .story-toggle {
+      background: var(--color-primary-highlight);
+      color: var(--color-primary);
+      transform: rotate(180deg);
+    }
+    .story-header:hover .story-toggle {
+      background: var(--color-surface-dynamic);
+      color: var(--color-text-muted);
+    }
+
+    /* Animated expand */
+    .story-body {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows var(--transition-expand);
+    }
+    .story-card.open .story-body {
+      grid-template-rows: 1fr;
+    }
+    .story-body-inner {
+      overflow: hidden;
+    }
+    .story-body-content {
+      padding: 0 var(--space-6) var(--space-6);
+      border-top: 1px solid var(--color-divider);
+      padding-top: var(--space-5);
+    }
+    @media (max-width: 600px) {
+      .story-body-content { padding: var(--space-4); padding-top: var(--space-4); }
+    }
+    .story-full {
+      font-size: var(--text-sm);
+      color: var(--color-text);
+      line-height: 1.75;
+      max-width: 68ch;
+    }
+    .story-full p + p { margin-top: var(--space-3); }
+
+    /* Animation fade in on open */
+    .story-card .story-body-content {
+      opacity: 0;
+      transition: opacity 250ms ease 100ms;
+    }
+    .story-card.open .story-body-content {
+      opacity: 1;
+    }
+
+    /* No results state */
+    .no-results {
+      text-align: center;
+      padding: var(--space-16) var(--space-6);
+      color: var(--color-text-faint);
+      display: none;
+    }
+    .no-results.visible { display: block; }
+    .no-results h3 {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      margin-bottom: var(--space-2);
+      color: var(--color-text-muted);
+    }
+
+    /* ============================================================
+       GLOSSARY
+    ============================================================ */
+    .glossary-section {
+      padding-block: 0 var(--space-20);
+    }
+    .glossary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+      gap: var(--space-3);
+    }
+    .glossary-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: box-shadow var(--transition-interactive), border-color var(--transition-interactive);
+      box-shadow: var(--shadow-sm);
+    }
+    .glossary-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-surface-dynamic);
+    }
+    .glossary-card.hidden { display: none; }
+    .glossary-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+      padding: var(--space-4) var(--space-5);
+      cursor: pointer;
+      user-select: none;
+    }
+    .glossary-term {
+      font-family: var(--font-display);
+      font-size: clamp(1rem, 0.9rem + 0.4vw, 1.15rem);
+      color: var(--color-text);
+      line-height: 1.2;
+    }
+    .glossary-toggle {
+      flex-shrink: 0;
+      color: var(--color-text-faint);
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform var(--transition-interactive), color var(--transition-interactive);
+    }
+    .glossary-card.open .glossary-toggle {
+      transform: rotate(180deg);
+      color: var(--color-primary);
+    }
+    .glossary-body {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows var(--transition-expand);
+    }
+    .glossary-card.open .glossary-body {
+      grid-template-rows: 1fr;
+    }
+    .glossary-body-inner { overflow: hidden; }
+    .glossary-body-content {
+      padding: 0 var(--space-5) var(--space-4);
+      border-top: 1px solid var(--color-divider);
+      padding-top: var(--space-3);
+      opacity: 0;
+      transition: opacity 220ms ease 80ms;
+    }
+    .glossary-card.open .glossary-body-content {
+      opacity: 1;
+    }
+    .glossary-def {
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+      line-height: 1.65;
+    }
+    .glossary-no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: var(--space-10) var(--space-6);
+      color: var(--color-text-faint);
+      display: none;
+    }
+    .glossary-no-results.visible { display: block; }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    .footer {
+      border-top: 1px solid var(--color-divider);
+      background: var(--color-surface);
+      padding-block: var(--space-10) var(--space-12);
+      text-align: center;
+    }
+    .footer-logo {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-2);
+    }
+    .footer-logo em { color: var(--color-primary); font-style: italic; }
+    .footer-tagline {
+      font-size: var(--text-sm);
+      color: var(--color-text-faint);
+      margin-bottom: var(--space-1);
+    }
+    .footer-powered {
+      font-size: var(--text-xs);
+      color: var(--color-text-faint);
+      opacity: 0.7;
+    }
+    .footer-heart {
+      display: inline-block;
+      color: var(--color-primary);
+    }
+
+    /* ============================================================
+       CATEGORY COLOR MAPPINGS
+    ============================================================ */
+    .cat-ai      { background: var(--cat-ai-bg);      color: var(--cat-ai); }
+    .cat-finance { background: var(--cat-finance-bg);  color: var(--cat-finance); }
+    .cat-tech    { background: var(--cat-tech-bg);     color: var(--cat-tech); }
+    .cat-culture { background: var(--cat-culture-bg);  color: var(--cat-culture); }
+    .cat-semi    { background: var(--cat-semi-bg);     color: var(--cat-semi); }
+    .cat-creator { background: var(--cat-creator-bg);  color: var(--cat-creator); }
+    .cat-bigtech { background: var(--cat-bigtech-bg);  color: var(--cat-bigtech); }
+    .cat-legal   { background: var(--cat-legal-bg);    color: var(--cat-legal); }
+
+    /* ============================================================
+       HIGHLIGHT (search match)
+    ============================================================ */
+    mark {
+      background: var(--color-primary-highlight);
+      color: var(--color-primary);
+      padding: 0 2px;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" aria-label="Site navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="#">Decoder<em>.</em></a>
+      <div class="nav-actions">
+        <button class="theme-toggle" data-theme-toggle aria-label="Switch to dark mode">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="container">
+      <div class="hero-kicker">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+        Your internet translator
+      </div>
+      <h1 class="hero-title" id="hero-title"><em>Decoder</em></h1>
+      <p class="hero-subtitle">Because your partner won't stop talking about the internet</p>
+      <div class="hero-search-wrap" role="search">
+        <label for="search-input" class="sr-only">Search stories and glossary terms</label>
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input
+          id="search-input"
+          class="hero-search"
+          type="search"
+          placeholder="Search any term, company, or reference…"
+          autocomplete="off"
+          spellcheck="false"
+        >
+        <button class="search-clear" id="search-clear" aria-label="Clear search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <path d="M18 6 6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <p class="hero-timestamp">
+        <strong>Last updated:</strong> Feb 27, 2026 at 9:43 PM PST
+      </p>
+    </div>
+  </section>
+
+  <!-- STORIES -->
+  <main>
+    <section class="stories-section" aria-labelledby="stories-heading">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-eyebrow">The feed</span>
+          <h2 class="section-title" id="stories-heading">This Week's Drama</h2>
+          <span class="section-count" id="stories-count">12 stories</span>
+        </div>
+
+        <div class="stories-grid" id="stories-grid" role="list">
+
+          <!-- Story A -->
+          <article class="story-card"
+            data-title="Anthropic vs The Pentagon"
+            data-category="AI / Government"
+            data-quick="Anthropic told the Pentagon no thanks to surveillance and killer robots. Trump banned their AI from all federal agencies."
+            data-tags="anthropic pentagon claude ai government trump federal"
+            role="listitem">
+            <div class="story-header" tabindex="0" aria-expanded="false" role="button">
+              <div class="story-header-left">
+                <div class="story-meta">
+                  <span class="category-tag cat-ai">AI / Government</span>
+                </div>
+                <h3 class="story-title">Anthropic vs The Pentagon</h3>
+                <p class="story-quick">Anthropic told the Pentagon "no thanks" to surveillance and killer robots. Trump banned their AI from all federal agencies.</p>
+              </div>
+              <div class="story-toggle" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="m6 9 6 6 6-6"/>
+                </svg>
+              </div>
+            </div>
+            <div class="story-body">
+              <div class="story-body-inner">
+                <div class="story-body-content">
+                  <div class="story-full">
+                    <p>Anthropic, the company behind the AI chatbot Claude (think ChatGPT's more cautious cousin), drew a line in the sand with the Pentagon. Their CEO Dario Amodei said they "cannot in good conscience" let their AI be used for mass surveillance or fully autonomous weapons.</p>
+                    <p>The Pentagon's response? Fine, we'll use someone else's AI. Then Trump ordered every federal agency to immediately stop using Anthropic's technology.</p>
+                    <p>Twitter is split — some see Anthropic as principled heroes, others think a private company shouldn't get to veto how the military operates. The debate boils down to: who gets to decide the ethics of AI in warfare?</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Story B -->
+          <article class="story-card"
+            data-title="OpenAI's $110 Billion Round"
+            data-category="AI / Finance"
+            data-quick="Sam Altman just raised the biggest funding round in history. $110 billion. From Amazon, NVIDIA, and SoftBank."
+            data-tags="openai chatgpt sam altman funding amazon nvidia softbank venture capital billion"
+            role="listitem">
+            <div class="story-header" tabindex="0" aria-expanded="false" role="button">
+              <div class="story-header-left">
+                <div class="story-meta">
+                  <span class="category-tag cat-ai">AI / Finance</span>
+                </div>
+                <h3 class="story-title">OpenAI's $110 Billion Round</h3>
+                <p class="story-quick">Sam Altman just raised the biggest funding round in history. $110 billion. From Amazon, NVIDIA, and SoftBank.</p>
+              </div>
+              <div class="story-toggle" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="m6 9 6 6 6-6"/>
+                </svg>
+              </div>
+            </div>
+            <div class="story-body">
+              <div class="story-body-inner">
+                <div class="story-body-content">
+                  <div class="story-full">
+                    <p>OpenAI (the ChatGPT company) just closed a $110 billion funding round — the largest in the history of venture capital by a massive margin. The investors are Amazon, NVIDIA (the chip company powering all AI), and SoftBank (the Japanese investment giant famous for big, sometimes wild bets).</p>
+                    <p>To put this in perspective, the entire US venture capital market was about $170 billion last year. One company just raised 65% of that.</p>
+                    <p>People are either calling this "the moment AI became real infrastructure" or "the biggest bubble in history." Your spouse probably said "one hundred and ten BILLION" in a voice that went up at the end.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Story C -->
+          <article class="story-card"
+            data-title="Block Lays Off 4,000 — Blames AI"
+            data-category="Tech / Finance"
+            data-quick="Jack Dorsey's fintech company Block (Square/Cash App) just cut 4,000 jobs, saying AI can do the work instead. Stock went up."
+            data-tags="block square cashapp jack dorsey layoffs ai jobs fintech intelligence-native stock"
+            role="listitem">
+            <div class="story-header" tabindex="0" aria-expanded="false" role="button">
+              <div class="story-header-left">
+                <div class="story-meta">
+                  <span class="category-tag cat-tech">Tech / Finance</span>
+                </div>
+                <h3 class="story-title">Block Lays Off 4,000 — Blames AI</h3>
+                <p class="story-quick">Jack Dorsey's fintech company Block (Square/Cash App) just cut 4,000 jobs, saying AI can do the work instead. Stock went up.</p>
+              </div>
+              <div class="story-toggle" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="m6 9 6 6 6-6"/>
+                </svg>
+              </div>
+            </div>
+            <div class="story-body">
+              <div class="story-body-inner">
+                <div class="story-body-content">
+                  <div class="story-full">
+                    <p>Block, the company formerly known as Square (they also make Cash App), just laid off about 4,000 employees. CEO Jack Dorsey — yes, the same guy who co-founded Twitter — said the company is going "intelligence-native," meaning they want AI to do the work humans were doing.</p>
+                    <p>The truly dystopian part? The stock price <em>went up</em> after the announcement, because Wall Street loves when companies cut costs.</p>
+                    <p>This is the latest in a wave of AI-driven layoffs in Feb 2026: UPS cut 30,000, Amazon 16,000, Meta Reality Labs 1,000, Dow 4,500, Heineken 6,000. The "AI is coming for jobs" conversation just got very real.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Story D -->
+          <article class="story-card"
+            data-title="DeepSeek V4 Dropping Next Week"
+            data-category="AI / China"
+            data-quick="China's AI darling DeepSeek is about to release a new model, and this time they're using Chinese-made chips instead of NVIDIA."
+            data-tags="deepseek china ai chips huawei cambricon nvidia export controls v4"
+            role="listitem">
+            <div class="story-header" tabindex="0" aria-expanded="false" role="button">
+              <div class="story-header-left">
+                <div class="story-meta">
+                  <span class="category-tag cat-ai">AI / China</span>
+                </div>
+                <h3 class="story-title">DeepSeek V4 Dropping Next Week</h3>
+                <p class="story-quick">China's AI darling DeepSeek is about to release a new model, and this time they're using Chinese-made chips instead of NVIDIA.</p>
+              </div>
+              <div class="story-toggle" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="m6 9 6 6 6-6"/>
+                </svg>
+              </div>
+            </div>
+            <div class="story-body">
+              <div class="story-body-inner">
+                <div class="story-body-content">
+                  <div class="story-full">
+                    <p>DeepSeek, the Chinese AI lab that shocked the world earlier this year by building frontier AI models for a fraction of the cost, is about to release "V4" — their next generation model.</p>
+                    <p>The big twist: they're working with Chinese chipmakers Huawei and Cambricon instead of relying on NVIDIA chips (which the US has been trying to restrict China from buying). If DeepSeek V4 performs well on Chinese chips, it could mean US chip export controls are basically useless.</p>
+                    <p>They're planning a technical paper alongside the release. Every AI researcher and chip investor on Earth is watching this one.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Story E -->
+          <article class="story-card"
+            data-title="Meta Renting Google's AI Chips"
+            data-category="Big Tech"
+            data-quick="Meta is paying Google to use their custom AI chips. Yes, competitors are now sharing infrastructure."
+            data-tags="meta facebook google tpu chips infrastructure ai training cloud"
+            role="listitem">
+            <div class="story-header" tabindex="0" aria-expanded="false" role="button">
+              <div class="story-header-left">
+                <div class="story-meta">
+                  <span class="category-tag cat-bigtech">Big Tech</span>
+                </div>
+                <h3 class="story-title">Meta Renting Google's AI Chips</h3>
+                <p class="story-quick">Meta is paying Google to use their custom AI chips. Yes, competitors are now sharing infrastructure.</p>
+              </div>
+              <div class="story-toggle" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="m6 9 6 6 6-6"/>
+                </svg>
+              </div>
+            </div>
+            <div class="story-body">
+              <div class="story-body-inner">
+                <div class="story-body-content">
+                  <div class="story-full">
+                    <p>In a move that surprised a lot of people, Meta (Facebook's parent company) signed a multi-year deal to rent Google's custom TPU chips for training AI models. This is like Pepsi renting Coca-Cola's bottling plant.</p>
+                    <p>It signals that demand for AI computing power is so extreme that even the biggest tech companies can't get enough NVIDIA chips and are diversifying. It also means Google is turning its internal infrastructure into a product it sells to competitors.</p>
+                    <p>The AI chip shortage is real, and it's reshaping how Big Tech operates.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Story F -->
+          <article class="story-card"
+            data-title="Elon's Twitter Trial Begins"
+            data-category="Tech / Legal"
+            data-quick="Jury just seated for the trial over whether Musk manipulated Twitter's stock price during his chaotic 2022 acquisition."
+            data-tags="elon musk twitter x trial securities lawsuit stock manipulation 2022 jury"
+            role="listitem">
+            <div class="story-header" tabindex="0" aria-expanded="false" role="button">
+              <div class="story-header-left">
+                <div class="story-meta">
+                  <span class="category-tag cat-legal">Tech / Legal</span>
+                </div>
+                <h3 class="story-title">Elon's Twitter Trial Begins</h3>
+                <p class="story-quick">Jury just seated for the trial over whether Musk manipulated Twitter's stock price during his chaotic 2022 acquisition.</p>
+              </div>
+              <div class="story-toggle" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="m6 9 6 6 6-6"/>
+                </svg>
+              </div>
+            </div>
+            <div class="story-body">
+              <div class="story-body-inner">
+                <div class="story-body-content">
+                  <div class="story-full">
+                    <p>Nine jurors have been selected in San Francisco for Elon Musk's trial about his 2022 Twitter acquisition. Twitter investors claim Musk violated securities law by publicly going back and forth about whether he'd actually buy the company, which tanked the stock price and cost shareholders money.</p>
+                    <p>Opening statements start March 2. This trial is separate from all the other Musk legal drama — it's specifically about whether his public waffling on the deal was market manipulation.</p>
+                    <p>Meanwhile, Musk just merged xAI (his AI company) into SpaceX, valuing the combined entity at over $1 trillion, and they're planning an IPO.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Story G -->
+          <article class="story-card"
+            data-title="SpaceX + xAI Merger → IPO"
+            data-category="Tech / Finance"
+            data-quick="Musk merged his AI lab xAI into SpaceX. Combined valuation: over $1 trillion. IPO planned for this summer."
+            data-tags="elon musk xai spacex grok ipo merger valuation trillion starlink"
+            role="listitem">
+            <div class="story-header" tabindex="0" aria-expanded="false" role="button">
+              <div class="story-header-left">
+                <div class="story-meta">
+                  <span class="category-tag cat-tech">Tech / Finance</span>
+                </div>
+                <h3 class="story-title">SpaceX + xAI Merger → IPO</h3>
+                <p class="story-quick">Musk merged his AI lab xAI into SpaceX. Combined valuation: over $1 trillion. IPO planned for this summer.</p>
+              </div>
+              <div class="story-toggle" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="m6 9 6 6 6-6"/>
+                </svg>
+              </div>
+            </div>
+            <div class="story-body">
+              <div class="story-body-inner">
+                <div class="story-body-content">
+                  <div class="story-full">
+                    <p>Elon Musk merged xAI (his AI company that makes Grok, the chatbot that runs on Twitter/X) into SpaceX (the rocket company). The combined valuation is reportedly over $1 trillion, with Bloomberg reporting a confidential filing planned for March and a June IPO.</p>
+                    <p>Why merge them? SpaceX has real revenue from Starlink and government launches, while xAI was valued at $230 billion but has Twitter (a money-losing social network) attached to it. The merger lets xAI ride SpaceX's credibility to public markets.</p>
+                    <p>Critics call it "a way to swallow a dying business." If the IPO happens, it'd be one of the largest in history.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Story H -->
+          <article class="story-card"
+            data-title="PewDiePie Trained His Own LLM"
+            data-category="AI / Culture"
+            data-quick="Yes, the YouTuber PewDiePie apparently trained his own AI model and it's actually good at coding."
+            data-tags="pewdiepie felix kjellberg llm youtuber ai model coding benchmark deepseek llama gpt viral"
+            role="listitem">
+            <div class="story-header" tabindex="0" aria-expanded="false" role="button">
+              <div class="story-header-left">
+                <div class="story-meta">
+                  <span class="category-tag cat-culture">AI / Culture</span>
+                </div>
+                <h3 class="story-title">PewDiePie Trained His Own LLM</h3>
+                <p class="story-quick">Yes, the YouTuber PewDiePie apparently trained his own AI model and it's actually good at coding.</p>
+              </div>
+              <div class="story-toggle" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="m6 9 6 6 6-6"/>
+                </svg>
+              </div>
+            </div>
+            <div class="story-body">
+              <div class="story-body-inner">
+                <div class="story-body-content">
+                  <div class="story-full">
+                    <p>In one of the more unexpected entries in the AI arms race, PewDiePie (Felix Kjellberg, the world's most famous individual YouTuber) apparently trained his own large language model, and it outperformed DeepSeek v2.5, LLAMA-4, and GPT-4o on coding benchmarks.</p>
+                    <p>The post went mega-viral with 2+ million impressions. Whether this is a genuine achievement or a well-crafted stunt, it captured the zeitgeist: AI model training is becoming accessible enough that a content creator can compete with billion-dollar labs.</p>
+                    <p>We truly live in the weirdest timeline.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Story I -->
+          <article class="story-card"
+            data-title="ChatGPT Going Woke?"
+            data-category="AI / Culture War"
+            data-quick="People are claiming ChatGPT is inserting political lectures into simple requests. Elon amplified it."
+            data-tags="chatgpt woke political bias openai elon musk culture war alignment"
+            role="listitem">
+            <div class="story-header" tabindex="0" aria-expanded="false" role="button">
+              <div class="story-header-left">
+                <div class="story-meta">
+                  <span class="category-tag cat-culture">AI / Culture War</span>
+                </div>
+                <h3 class="story-title">ChatGPT Going Woke?</h3>
+                <p class="story-quick">People are claiming ChatGPT is inserting political lectures into simple requests. Elon amplified it.</p>
+              </div>
+              <div class="story-toggle" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="m6 9 6 6 6-6"/>
+                </svg>
+              </div>
+            </div>
+            <div class="story-body">
+              <div class="story-body-inner">
+                <div class="story-body-content">
+                  <div class="story-full">
+                    <p>A viral post showed someone asking ChatGPT a straightforward numerical question and getting an unsolicited lecture about social issues alongside the answer. Elon Musk amplified it to his 235 million followers.</p>
+                    <p>The "woke AI" discourse is a recurring theme — every few weeks someone posts a screenshot of an AI chatbot giving an ideologically-charged response to an innocuous question, and it ignites a firestorm about whether AI companies are encoding political bias into their models.</p>
+                    <p>Anthropic, OpenAI, and Google all tune their models' behavior differently, and "alignment" (making AI behave the way you want) is one of the most contentious topics in tech.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Story J -->
+          <article class="story-card"
+            data-title="NVIDIA at 19x Forward PE"
+            data-category="Finance / Markets"
+            data-quick="Tom Lee says NVIDIA is absurdly cheap at 19x forward earnings while Costco trades at 50x. Is the AI trade underpriced?"
+            data-tags="nvidia tom lee fundstrat forward pe costco valuation ai stock market earnings"
+            role="listitem">
+            <div class="story-header" tabindex="0" aria-expanded="false" role="button">
+              <div class="story-header-left">
+                <div class="story-meta">
+                  <span class="category-tag cat-finance">Finance / Markets</span>
+                </div>
+                <h3 class="story-title">NVIDIA at 19x Forward PE</h3>
+                <p class="story-quick">Tom Lee says NVIDIA is absurdly cheap at 19x forward earnings while Costco trades at 50x. Is the AI trade underpriced?</p>
+              </div>
+              <div class="story-toggle" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="m6 9 6 6 6-6"/>
+                </svg>
+              </div>
+            </div>
+            <div class="story-body">
+              <div class="story-body-inner">
+                <div class="story-body-content">
+                  <div class="story-full">
+                    <p>Tom Lee of Fundstrat, one of Wall Street's most-watched strategists, pointed out a bizarre market anomaly: NVIDIA — the company powering the entire AI revolution — trades at only 19x forward earnings. That's cheaper than Costco (50x), a company that sells bulk toilet paper and rotisserie chickens.</p>
+                    <p>NVIDIA just reported $60 billion in revenue, is guiding to $70 billion, and is growing 70%+ year over year. The bull case is that the market is irrationally undervaluing AI infrastructure. The bear case is that the market is pricing in a coming slowdown in AI spending.</p>
+                    <p>Your spouse is probably staring at charts right now.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Story K -->
+          <article class="story-card"
+            data-title="ASML's EUV Breakthrough"
+            data-category="Semiconductors"
+            data-quick="ASML, the Dutch company that makes the machines that make AI chips, just achieved a power breakthrough that could ease the chip shortage."
+            data-tags="asml euv lithography chips semiconductor breakthrough dutch manufacturing nvidia"
+            role="listitem">
+            <div class="story-header" tabindex="0" aria-expanded="false" role="button">
+              <div class="story-header-left">
+                <div class="story-meta">
+                  <span class="category-tag cat-semi">Semiconductors</span>
+                </div>
+                <h3 class="story-title">ASML's EUV Breakthrough</h3>
+                <p class="story-quick">ASML, the Dutch company that makes the machines that make AI chips, just achieved a power breakthrough that could ease the chip shortage.</p>
+              </div>
+              <div class="story-toggle" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="m6 9 6 6 6-6"/>
+                </svg>
+              </div>
+            </div>
+            <div class="story-body">
+              <div class="story-body-inner">
+                <div class="story-body-content">
+                  <div class="story-full">
+                    <p>ASML is the most important company most people have never heard of. They make the extreme ultraviolet (EUV) lithography machines that are essential for manufacturing the most advanced semiconductors. There are only a handful of these machines in the world.</p>
+                    <p>Their researchers just reported a breakthrough that could significantly increase EUV tool power, meaning chipmakers could produce more advanced chips faster.</p>
+                    <p>If this pans out, it could help ease the AI chip shortage that's been constraining the entire industry. Think of it as widening the single-lane highway that all AI computing has to travel through.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Story L -->
+          <article class="story-card"
+            data-title="MrBeast Bought a Bank App"
+            data-category="Creator Economy / Finance"
+            data-quick="YouTuber MrBeast acquired Step, a financial services app. Creator economy meets fintech."
+            data-tags="mrbeast jimmy donaldson step fintech bank app youtube creator economy feastables acquisition"
+            role="listitem">
+            <div class="story-header" tabindex="0" aria-expanded="false" role="button">
+              <div class="story-header-left">
+                <div class="story-meta">
+                  <span class="category-tag cat-creator">Creator Economy</span>
+                </div>
+                <h3 class="story-title">MrBeast Bought a Bank App</h3>
+                <p class="story-quick">YouTuber MrBeast acquired Step, a financial services app. Creator economy meets fintech.</p>
+              </div>
+              <div class="story-toggle" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="m6 9 6 6 6-6"/>
+                </svg>
+              </div>
+            </div>
+            <div class="story-body">
+              <div class="story-body-inner">
+                <div class="story-body-content">
+                  <div class="story-full">
+                    <p>MrBeast (Jimmy Donaldson), the world's biggest YouTuber with 300M+ subscribers, acquired Step — a financial services app aimed at younger users.</p>
+                    <p>This is part of a broader trend of content creators moving from "influence" to actual business ownership. MrBeast already has a snack brand (Feastables) and a burger chain, and now he's entering financial services.</p>
+                    <p>The acquisition was notable enough to make FinTech Futures' top 5 M&A deals of February 2026 alongside multi-billion-dollar bank deals. Whether this is genius or hubris is hotly debated.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </div><!-- /stories-grid -->
+
+        <div class="no-results" id="stories-no-results" role="status">
+          <h3>Nothing found here</h3>
+          <p style="color:var(--color-text-faint);font-size:var(--text-sm)">Try a different term, or ask your spouse to slow down.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- GLOSSARY -->
+    <section class="glossary-section" aria-labelledby="glossary-heading">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-eyebrow">The decoder ring</span>
+          <h2 class="section-title" id="glossary-heading">Glossary</h2>
+          <span class="section-count" id="glossary-count">15 terms</span>
+        </div>
+
+        <div class="glossary-grid" id="glossary-grid" role="list">
+
+          <article class="glossary-card" data-term="DOGE" data-def="Not the crypto. The Department of Government Efficiency, Elon Musk's initiative to cut federal spending." role="listitem">
+            <div class="glossary-header" tabindex="0" aria-expanded="false" role="button">
+              <h3 class="glossary-term">DOGE</h3>
+              <div class="glossary-toggle" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="glossary-body">
+              <div class="glossary-body-inner">
+                <div class="glossary-body-content">
+                  <p class="glossary-def">Not the crypto. The Department of Government Efficiency, Elon Musk's initiative to cut federal spending. It's the controversial project to slash government costs and employees. (Yes, the name is a meme reference. Yes, that was intentional.)</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="glossary-card" data-term="LLM" data-def="Large Language Model. The technology behind ChatGPT, Claude, Gemini, etc." role="listitem">
+            <div class="glossary-header" tabindex="0" aria-expanded="false" role="button">
+              <h3 class="glossary-term">LLM</h3>
+              <div class="glossary-toggle" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="glossary-body">
+              <div class="glossary-body-inner">
+                <div class="glossary-body-content">
+                  <p class="glossary-def">Large Language Model. The technology behind ChatGPT, Claude, Gemini, and every other AI chatbot. Trained on enormous amounts of text, they predict the next word — and when you do that really well at massive scale, you get something that can write code, answer questions, and hold a conversation.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="glossary-card" data-term="TPU" data-def="Tensor Processing Unit. Google's custom AI chips, competing with NVIDIA's GPUs." role="listitem">
+            <div class="glossary-header" tabindex="0" aria-expanded="false" role="button">
+              <h3 class="glossary-term">TPU</h3>
+              <div class="glossary-toggle" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="glossary-body">
+              <div class="glossary-body-inner">
+                <div class="glossary-body-content">
+                  <p class="glossary-def">Tensor Processing Unit. Google's custom AI chips, competing with NVIDIA's GPUs. Google built these specifically for training AI models, giving them more efficiency for AI workloads. Meta just signed a deal to rent them — which is how desperate the AI chip crunch has gotten.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="glossary-card" data-term="EUV" data-def="Extreme Ultraviolet Lithography. The insanely complex tech used to manufacture cutting-edge chips." role="listitem">
+            <div class="glossary-header" tabindex="0" aria-expanded="false" role="button">
+              <h3 class="glossary-term">EUV</h3>
+              <div class="glossary-toggle" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="glossary-body">
+              <div class="glossary-body-inner">
+                <div class="glossary-body-content">
+                  <p class="glossary-def">Extreme Ultraviolet Lithography. The insanely complex technology used to print the tiny circuits on advanced computer chips. Only ASML makes the machines that do this. They cost $200+ million each, weigh as much as two commercial aircraft, and require 100,000 parts. Everything advanced in AI runs on chips made with these machines.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="glossary-card" data-term="Forward PE" data-def="Price-to-Earnings ratio based on future expected earnings. A way to value stocks." role="listitem">
+            <div class="glossary-header" tabindex="0" aria-expanded="false" role="button">
+              <h3 class="glossary-term">Forward PE</h3>
+              <div class="glossary-toggle" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="glossary-body">
+              <div class="glossary-body-inner">
+                <div class="glossary-body-content">
+                  <p class="glossary-def">Price-to-Earnings ratio based on future expected earnings. If a stock trades at 20x forward PE, you're paying $20 for every $1 the company is expected to earn next year. Lower = potentially cheaper. Higher = either expensive or the market expects big growth. NVIDIA at 19x looks cheap compared to Costco at 50x — but only if NVIDIA keeps growing.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="glossary-card" data-term="Alignment" data-def="Training AI to behave according to human values. Extremely contentious topic." role="listitem">
+            <div class="glossary-header" tabindex="0" aria-expanded="false" role="button">
+              <h3 class="glossary-term">Alignment</h3>
+              <div class="glossary-toggle" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="glossary-body">
+              <div class="glossary-body-inner">
+                <div class="glossary-body-content">
+                  <p class="glossary-def">Training AI to behave according to human values. Sounds simple. It's not. "Alignment" is the field of trying to make AI do what you actually want it to do, not just what you literally told it to do. Different AI companies have very different ideas about what "good behavior" means — which is why some AI feels "preachy" and others feel "edgy." It's also the thing that keeps AI safety researchers up at night.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="glossary-card" data-term="Frontier Model" data-def="The most powerful, cutting-edge AI models (GPT-5, Claude Opus, Gemini)." role="listitem">
+            <div class="glossary-header" tabindex="0" aria-expanded="false" role="button">
+              <h3 class="glossary-term">Frontier Model</h3>
+              <div class="glossary-toggle" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="glossary-body">
+              <div class="glossary-body-inner">
+                <div class="glossary-body-content">
+                  <p class="glossary-def">The most powerful, cutting-edge AI models — think GPT-4o, Claude Opus, Gemini Ultra, and whatever DeepSeek just released. "Frontier" means it's at the absolute edge of what AI can currently do. These are the models that require massive compute, cost millions to train, and regularly get called either "the most dangerous technology ever made" or "just autocomplete." Depends who you ask.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="glossary-card" data-term="Agentic AI" data-def="AI that can take actions on its own (browse web, write code, make decisions), not just chat." role="listitem">
+            <div class="glossary-header" tabindex="0" aria-expanded="false" role="button">
+              <h3 class="glossary-term">Agentic AI</h3>
+              <div class="glossary-toggle" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="glossary-body">
+              <div class="glossary-body-inner">
+                <div class="glossary-body-content">
+                  <p class="glossary-def">AI that can take actions on its own — browse the web, write and run code, book meetings, send emails — not just answer questions in a chat window. The "agent" can break a task into steps and execute them autonomously. This is the next big AI frontier: AI that does things for you, not just talks to you. Also the thing that sounds either extremely helpful or extremely terrifying depending on your mood.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="glossary-card" data-term="xAI" data-def="Elon Musk's AI company. Makes Grok. Now merged with SpaceX." role="listitem">
+            <div class="glossary-header" tabindex="0" aria-expanded="false" role="button">
+              <h3 class="glossary-term">xAI</h3>
+              <div class="glossary-toggle" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="glossary-body">
+              <div class="glossary-body-inner">
+                <div class="glossary-body-content">
+                  <p class="glossary-def">Elon Musk's AI company, founded in 2023 after he left OpenAI's board. Makes Grok, the chatbot built into X (Twitter). Was valued at $230B, then just merged with SpaceX. Musk's pitch: "maximum truth-seeking AI" — which in practice means it's less filtered than competitors. Whether that's a feature or a bug is a matter of hot debate.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="glossary-card" data-term="Open Source vs Closed Source" data-def="Whether AI model code is publicly available (like Meta's Llama) or proprietary (like OpenAI's GPT)." role="listitem">
+            <div class="glossary-header" tabindex="0" aria-expanded="false" role="button">
+              <h3 class="glossary-term">Open vs Closed Source</h3>
+              <div class="glossary-toggle" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="glossary-body">
+              <div class="glossary-body-inner">
+                <div class="glossary-body-content">
+                  <p class="glossary-def">Whether AI model code is publicly available (open source, like Meta's Llama or DeepSeek) or kept secret (closed source, like OpenAI's GPT or Anthropic's Claude). Open source lets anyone download, run, and modify the model. It democratizes AI but also means anyone can use it for anything, including bad things. This debate is huge in AI right now — more contested than whether pineapple belongs on pizza.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="glossary-card" data-term="GPU" data-def="Graphics Processing Unit. Originally for gaming, now the critical hardware for AI training. NVIDIA dominates." role="listitem">
+            <div class="glossary-header" tabindex="0" aria-expanded="false" role="button">
+              <h3 class="glossary-term">GPU</h3>
+              <div class="glossary-toggle" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="glossary-body">
+              <div class="glossary-body-inner">
+                <div class="glossary-body-content">
+                  <p class="glossary-def">Graphics Processing Unit. Originally made for gaming and rendering visuals, GPUs turned out to be perfect for AI training because they can do millions of math operations in parallel. NVIDIA dominates this market so completely that their chips have become the de facto currency of the AI gold rush. NVIDIA's H100 chip costs ~$30,000 each, and AI labs buy them by the thousands.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="glossary-card" data-term="Capex" data-def="Capital Expenditure. Big tech spent $260B on AI infrastructure in 2025 and plans $600B in 2026." role="listitem">
+            <div class="glossary-header" tabindex="0" aria-expanded="false" role="button">
+              <h3 class="glossary-term">Capex</h3>
+              <div class="glossary-toggle" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="glossary-body">
+              <div class="glossary-body-inner">
+                <div class="glossary-body-content">
+                  <p class="glossary-def">Capital Expenditure — big purchases like buildings, machines, and infrastructure. In AI context: data centers, servers, and chips. Big tech (Google, Meta, Microsoft, Amazon) spent $260 billion on AI infrastructure in 2025 and is planning to spend $600 billion in 2026. These are the biggest corporate spending announcements in history. When your spouse says "capex cycle," they mean: companies are spending insane amounts of money on AI hardware.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="glossary-card" data-term="Series B" data-def="A stage of startup funding. Typically $10-50M, but in AI-land, now routinely $100M+." role="listitem">
+            <div class="glossary-header" tabindex="0" aria-expanded="false" role="button">
+              <h3 class="glossary-term">Series B</h3>
+              <div class="glossary-toggle" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="glossary-body">
+              <div class="glossary-body-inner">
+                <div class="glossary-body-content">
+                  <p class="glossary-def">A stage of startup funding. Companies go: Seed → Series A → Series B → Series C, etc. Each round they raise more money at a higher valuation. Series B used to mean $10–50M. In AI-land 2025-2026, it means $100M minimum, often $500M+. It's like inflation, but for startup ambition. OpenAI's $110B "round" would technically be many normal funding stages compressed into one eyebrow-raising number.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="glossary-card" data-term="IPO" data-def="Initial Public Offering. When a private company starts selling stock publicly." role="listitem">
+            <div class="glossary-header" tabindex="0" aria-expanded="false" role="button">
+              <h3 class="glossary-term">IPO</h3>
+              <div class="glossary-toggle" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="glossary-body">
+              <div class="glossary-body-inner">
+                <div class="glossary-body-content">
+                  <p class="glossary-def">Initial Public Offering — when a private company "goes public" by selling shares on a stock exchange for the first time. It's how early investors and employees cash out, and how companies raise money from everyday investors. When your spouse says SpaceX is "planning an IPO," they mean the company is getting ready to let the public buy in — and it would probably be one of the biggest stock market events in years.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="glossary-card" data-term="Market Cap" data-def="Total value of a company's shares. Apple and NVIDIA fight over $3+ trillion." role="listitem">
+            <div class="glossary-header" tabindex="0" aria-expanded="false" role="button">
+              <h3 class="glossary-term">Market Cap</h3>
+              <div class="glossary-toggle" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="glossary-body">
+              <div class="glossary-body-inner">
+                <div class="glossary-body-content">
+                  <p class="glossary-def">Market Capitalization — the total value of all a company's shares combined. Calculated as: share price × number of shares. It's the most common way to measure "how big" a company is. Apple and NVIDIA both trade above $3 trillion. For comparison, the entire GDP of the UK is about $3.1 trillion. Your spouse mentioning "market cap" means they're talking about how much a company is worth according to the stock market — which may or may not reflect reality.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </div><!-- /glossary-grid -->
+
+        <div class="glossary-no-results" id="glossary-no-results" role="status">
+          <p style="font-size:var(--text-sm)">No matching terms. Try asking your partner — they probably know.</p>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer" aria-label="Site footer">
+    <div class="container">
+      <div class="footer-logo">Decoder<em>.</em></div>
+      <p class="footer-tagline">Made with <span class="footer-heart">♥</span> (and mild exasperation) for spouses everywhere</p>
+      <p class="footer-powered">Powered by the extremely online half of the relationship</p>
+    </div>
+  </footer>
+
+  <script>
+    // ============================================================
+    // THEME TOGGLE
+    // ============================================================
+    (function () {
+      const toggle = document.querySelector('[data-theme-toggle]');
+      const root = document.documentElement;
+      let theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      root.setAttribute('data-theme', theme);
+
+      function updateToggleIcon() {
+        toggle.innerHTML = theme === 'dark'
+          ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
+          : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+      }
+
+      updateToggleIcon();
+
+      if (toggle) {
+        toggle.addEventListener('click', () => {
+          theme = theme === 'dark' ? 'light' : 'dark';
+          root.setAttribute('data-theme', theme);
+          toggle.setAttribute('aria-label', `Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`);
+          updateToggleIcon();
+        });
+      }
+    })();
+
+    // ============================================================
+    // STORY CARD EXPAND/COLLAPSE
+    // ============================================================
+    function initCards() {
+      document.querySelectorAll('.story-header').forEach(header => {
+        const card = header.closest('.story-card');
+        header.addEventListener('click', () => toggleCard(card));
+        header.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleCard(card);
+          }
+        });
+      });
+
+      document.querySelectorAll('.glossary-header').forEach(header => {
+        const card = header.closest('.glossary-card');
+        header.addEventListener('click', () => toggleCard(card));
+        header.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleCard(card);
+          }
+        });
+      });
+    }
+
+    function toggleCard(card) {
+      const isOpen = card.classList.contains('open');
+      const header = card.querySelector('[aria-expanded]');
+      card.classList.toggle('open');
+      if (header) header.setAttribute('aria-expanded', !isOpen);
+    }
+
+    initCards();
+
+    // ============================================================
+    // SEARCH FUNCTIONALITY
+    // ============================================================
+    const searchInput = document.getElementById('search-input');
+    const searchClear = document.getElementById('search-clear');
+    const storiesGrid = document.getElementById('stories-grid');
+    const glossaryGrid = document.getElementById('glossary-grid');
+    const storiesNoResults = document.getElementById('stories-no-results');
+    const glossaryNoResults = document.getElementById('glossary-no-results');
+    const storiesCount = document.getElementById('stories-count');
+    const glossaryCount = document.getElementById('glossary-count');
+
+    const allStories = Array.from(document.querySelectorAll('.story-card'));
+    const allGlossary = Array.from(document.querySelectorAll('.glossary-card'));
+
+    function normalize(str) {
+      return str.toLowerCase().replace(/[^a-z0-9\s]/g, ' ');
+    }
+
+    function performSearch(query) {
+      const q = normalize(query.trim());
+      const terms = q.split(/\s+/).filter(Boolean);
+
+      // Show/hide clear button
+      searchClear.classList.toggle('visible', query.length > 0);
+
+      if (!q) {
+        // Reset: show all
+        allStories.forEach(el => el.classList.remove('hidden'));
+        allGlossary.forEach(el => el.classList.remove('hidden'));
+        storiesNoResults.classList.remove('visible');
+        glossaryNoResults.classList.remove('visible');
+        storiesCount.textContent = `${allStories.length} stories`;
+        glossaryCount.textContent = `${allGlossary.length} terms`;
+        return;
+      }
+
+      // Filter stories
+      let storyVisible = 0;
+      allStories.forEach(card => {
+        const haystack = normalize([
+          card.dataset.title || '',
+          card.dataset.category || '',
+          card.dataset.quick || '',
+          card.dataset.tags || '',
+          card.querySelector('.story-full')?.textContent || ''
+        ].join(' '));
+
+        const matches = terms.every(t => haystack.includes(t));
+        card.classList.toggle('hidden', !matches);
+        if (matches) storyVisible++;
+      });
+
+      storiesNoResults.classList.toggle('visible', storyVisible === 0);
+      storiesCount.textContent = `${storyVisible} stor${storyVisible === 1 ? 'y' : 'ies'}`;
+
+      // Filter glossary
+      let glossVisible = 0;
+      allGlossary.forEach(card => {
+        const haystack = normalize([
+          card.dataset.term || '',
+          card.dataset.def || '',
+          card.querySelector('.glossary-def')?.textContent || ''
+        ].join(' '));
+
+        const matches = terms.every(t => haystack.includes(t));
+        card.classList.toggle('hidden', !matches);
+        if (matches) glossVisible++;
+      });
+
+      glossaryNoResults.classList.toggle('visible', glossVisible === 0);
+      glossaryCount.textContent = `${glossVisible} term${glossVisible === 1 ? '' : 's'}`;
+    }
+
+    searchInput.addEventListener('input', e => performSearch(e.target.value));
+
+    searchClear.addEventListener('click', () => {
+      searchInput.value = '';
+      performSearch('');
+      searchInput.focus();
+    });
+
+    // Keyboard shortcut: "/" to focus search
+    document.addEventListener('keydown', e => {
+      if (e.key === '/' && document.activeElement !== searchInput) {
+        e.preventDefault();
+        searchInput.focus();
+        searchInput.select();
+      }
+      if (e.key === 'Escape' && document.activeElement === searchInput) {
+        searchInput.value = '';
+        performSearch('');
+        searchInput.blur();
+      }
+    });
+  </script>
+
+  <style>
+    /* Screen-reader only utility */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+  </style>
+
+</body>
+</html>
